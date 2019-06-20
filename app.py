@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 import os
 import requests
-#import webbrowser
 import time
 import base64
 
@@ -21,11 +20,11 @@ def login():
                 if (line.split(" ")[0] == request.form['username'] and decodedCheck == request.form['password']):
                         command = str(os.system('curl -X POST ' + backendServer + ' -H \'content-type: application/json\' -d \'"' + request.form['username']  + '"\''))
                         print(command)
-                        time.sleep(5)
-                        toEncode = str.encode(str('vcd-' + request.form['username']))
+                        time.sleep(4)
+                        toEncode = str.encode(str('hostname=vcd-' + request.form['username'] + '&port=3389&protocol=rdp&username=' + request.form['username'] + '&timestamp=' + str(int(time.time()))))
                         encoded = base64.b64encode(toEncode)
-                        newUrl = 'http://localhost:81/vcd/?=' + str(encoded.decode("utf-8"))
-                        return redirect(newUrl)
+                        encoded = str(encoded.decode("utf-8").split("=")[0])
+                        return render_template('vcd.html', vcd = encoded, error=error)
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
