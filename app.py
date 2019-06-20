@@ -20,7 +20,7 @@ def login():
                 if (line.split(" ")[0] == request.form['username'] and decodedCheck == request.form['password']):
                         command = str(os.system('curl -X POST ' + backendServer + ' -H \'content-type: application/json\' -d \'"' + request.form['username']  + '"\''))
                         print(command)
-                        time.sleep(1)
+                        time.sleep(2)
                         toEncode = str.encode(str('hostname=vcd-' + request.form['username'] + '&port=3389&protocol=rdp&username=' + request.form['username'] + '&timestamp=' + str(int(time.time()))))
                         encoded = base64.b64encode(toEncode)
                         encoded = str(encoded.decode("utf-8").split("=")[0])
