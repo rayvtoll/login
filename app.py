@@ -1,10 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, request
-import os
+from flask import Flask, render_template, request
 import requests
 import time
 import base64
 
-backendServer = "backend"
+backendServer = "http://backend"
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -18,13 +17,13 @@ def login():
                     break
                 decodedCheck = base64.b64decode(line.split(" ")[1].encode()).decode("utf-8")
                 if (line.split(" ")[0] == request.form['username'] and decodedCheck == request.form['password']):
-                        command = str(os.system('curl -X POST ' + backendServer + ' -H \'content-type: application/json\' -d \'"' + request.form['username']  + '"\''))
-                        print(command)
-                        time.sleep(2)
-                        toEncode = str.encode(str('hostname=vcd-' + request.form['username'] + '&port=3389&protocol=rdp&username=' + request.form['username'] + '&timestamp=' + str(int(time.time()))))
-                        encoded = base64.b64encode(toEncode)
-                        encoded = str(encoded.decode("utf-8").split("=")[0])
-                        return render_template('vcd.html', vcd = encoded, error=error)
+                    command = requests.post(backendServer, json = request.form['username'])
+                    print(command)
+                    time.sleep(2)
+                    toEncode = str.encode(str('hostname=vcd-' + request.form['username'] + '&port=3389&protocol=rdp&username=' + request.form['username'] + '&timestamp=' + str(int(time.time()))))
+                    encoded = base64.b64encode(toEncode)
+                    encoded = str(encoded.decode("utf-8").split("=")[0])
+                    return render_template('vcd.html', vcd = encoded, error=error)
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
