@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        	<title>Virtual Container Desktop (VCD)</title>
+    		<style type="text/css">
+			body {
+				background-color: #000000;
+				overflow: hidden;
+				height: 100%;
+				width: 100%;
+				margin: 0px;
+				padding: 0px;
+			}
+			#display {
+				cursor: none;
+			}
+		</style>
+    	</head>
+	<body>
+		<!-- Guacamole -->
+		{% load static %}
+		<script type="text/javascript" src="{% static 'guacamole-common-js/all.min.js' %}"></script>
+
+		<!-- Display -->
+		<div id="display"></div>
+
+<!-- Init -->
+<script type="text/javascript"> /* <![CDATA[ */
+
+    // Get display div from document
+    var display = document.getElementById("display");
+
+    // Instantiate client, using an HTTP tunnel for communications.
+    var guac = new Guacamole.Client(
+        new Guacamole.HTTPTunnel("/tunnel")
+    );
+
+    // Add client to display div
+    display.appendChild(guac.getDisplay().getElement());
+
+    // Error handler
+    guac.onerror = function(error) {
+        alert(error);
+    };
+
+    connect_string = "vcd=test&width=" + window.innerWidth + "&height=" + window.innerHeight;
+ 
+    // Connect
+    guac.connect(connect_string);
+
+    // Disconnect on close
+    window.onunload = function() {
+        guac.disconnect();
+    }
+
+    // Mouse
+    var mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
+
+    mouse.onmousedown =
+    mouse.onmouseup   =
+    mouse.onmousemove = function(mouseState) {
+        guac.sendMouseState(mouseState);
+    };
+
+    // Keyboard
+    var keyboard = new Guacamole.Keyboard(document);
+
+    keyboard.onkeydown = function (keysym) {
+        guac.sendKeyEvent(1, keysym);
+    };
+
+    keyboard.onkeyup = function (keysym) {
+        guac.sendKeyEvent(0, keysym);
+    };
+
+/* ]]> */ </script>
+</body>
+</html>

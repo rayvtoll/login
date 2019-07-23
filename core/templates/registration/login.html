@@ -1,0 +1,68 @@
+<!-- templates/registration/login.html -->
+<html>
+	<head>
+		<title>
+			Login: Virtual Container Desktop Environment
+		</title>
+		<style>
+			.login {
+				position: relative;
+				width: 100%;
+				top: 50%;
+				background: #01689b;
+			}
+
+			.login-left {
+				color: white;
+				display: table-cell;
+				font-size: 13px;
+				width: 32%;
+				background-repeat: no-repeat;
+				background-position: 100% 50%;
+				background-position-x: 100%;
+				background-position-y: 50%;
+			}
+			.login-right {
+				color: white;
+				width: 627px;
+				padding: 30px 47px 40px 20px;
+				font-family: 'citrixsans-regular';
+			}
+			.aftertext {
+				position: relative;
+				top: 50%;
+				bottom: 0;
+				margin: auto;
+				width: 700px;
+				height: 80px;
+				background-position: center;
+				background-repeat:no-repeat;
+				background-position-x:center;
+				background-position-y:center;
+			}
+			.custombutton {
+				background: #02a1c1;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="login">
+			<div class="login-left">
+			</div>
+			<div class="login-right" align="center">
+				<form method="post">
+  					{% csrf_token %}
+  					{{ form.as_p }}
+
+  					<button class="custombutton" type="submit">Login</button>
+				</form>
+			</div>
+		</div>
+		<div class="aftertext" style="text-align:center;color:black;font-size:13px;">
+			<br>
+			For login assistance please refer to your local administrator.
+			<br>
+			Please visit https://github.com/rayvtoll/vcde for more information about this project.
+		</div>
+	</body>
+</html>

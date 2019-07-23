@@ -1,8 +1,9 @@
-FROM python:3.7-alpine
-RUN apk add -U curl iputils
-RUN pip3 install --upgrade pip && pip3 install flask requests
+FROM alpine
+RUN apk add --update py-pip python && pip install requests  
+RUN pip install --upgrade django
 WORKDIR /app
 COPY . /app
 EXPOSE 5001
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+RUN pip install -r requirements.txt
+ENTRYPOINT ["python"]
+CMD ["manage.py", "runserver", "0.0.0.0:5001"]
