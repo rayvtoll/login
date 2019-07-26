@@ -8,6 +8,8 @@
 			.login {
 				position: relative;
 				width: 100%;
+				margin-top: -50px;
+				align: center;
 				top: 50%;
 				background: #01689b;
 			}
@@ -17,10 +19,6 @@
 				display: table-cell;
 				font-size: 13px;
 				width: 32%;
-				background-repeat: no-repeat;
-				background-position: 100% 50%;
-				background-position-x: 100%;
-				background-position-y: 50%;
 			}
 			.login-right {
 				color: white;
@@ -35,13 +33,18 @@
 				margin: auto;
 				width: 700px;
 				height: 80px;
-				background-position: center;
-				background-repeat:no-repeat;
-				background-position-x:center;
-				background-position-y:center;
+			}
+			.buttondiv-left {
+				width: 32%;
+			}
+			.buttondiv-right {
+				width: 600px;
 			}
 			.custombutton {
 				background: #02a1c1;
+				color: white;
+				border: 0px;
+				width: 200px;
 			}
 		</style>
 	</head>
@@ -49,12 +52,14 @@
 		<div class="login">
 			<div class="login-left">
 			</div>
-			<div class="login-right" align="center">
+			<div class="login-right" align="right">
 				<form method="post">
   					{% csrf_token %}
   					{{ form.as_p }}
-
-  					<button class="custombutton" type="submit">Login</button>
+				<div class="buttondiv-left"></div>
+				<div class="buttondiv-right">
+  				<button class="custombutton" type="submit">Login</button>
+				</div>
 				</form>
 			</div>
 		</div>
