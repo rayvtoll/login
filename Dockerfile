@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk add --update py-pip python && pip install requests  
+RUN apk add --update py-pip python build-base openldap-dev python2-dev && pip install requests django-auth-ldap
 RUN pip install --upgrade django
 WORKDIR /app
 COPY . /app

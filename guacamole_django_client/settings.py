@@ -126,13 +126,50 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = '/vcd'
 
-# guacd daemon host address and port
-#GUACD_HOST = '127.0.0.1'
-#GUACD_PORT = 4822
+# Check for environment variable USELDAP is set to 'True'
+if 'USELDAP' in os.environ:
+    print("Is USELDAP environment variable: {}".format(os.environ.get('USELDAP')))
 
-# ssh login settings
-#SSH_HOST = '127.0.0.1'
-#SSH_PORT = 3390
-#SSH_USER = 'admin'
-#SSH_PASSWORD = 'admin'
+if os.environ.get('USELDAP') == 'True':
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {"console": {"class": "logging.StreamHandler"}},
+        "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+    }
+    import ldap 
+    from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
+    # Print environment variables for debug:
+    for i in ['LDAPURI', 'LDAPBIND', 'LDAPPASSWRD', 'LDAPUSERS', 'LDAPGROUPS']:
+        print(os.environ.get(i))
+
+    # Use environment variables
+    AUTH_LDAP_SERVER_URI = os.environ.get('LDAPURI') #example : LDAPURI=ldap://contosoOpenLdap
+    AUTH_LDAP_BIND_DN = os.environ.get('LDAPBIND') # example : 'cn=ldap-ro,dc=contoso,dc=com'
+    AUTH_LDAP_BIND_PASSWORD = os.environ.get('LDAPPASSWRD') # example : 'P@ss1W0Rd!'
+    AUTH_LDAP_USER_SEARCH = LDAPSearch(
+        os.environ.get('LDAPUSERS'),
+        ldap.SCOPE_SUBTREE,
+        '(uid=%(user)s)',
+    )
+    AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+        os.environ.get('LDAPGROUPS'),
+        ldap.SCOPE_SUBTREE,
+        '(objectClass=groupOfNames)',
+    )
+
+    # general ldap variables
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+        'django_auth_ldap.backend.LDAPBackend',
+    )
+    AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr='cn')
+    AUTH_LDAP_USER_ATTR_MAP = {
+        'first_name': 'givenName',
+        'last_name': 'sn',
+        'email': 'mail',
+    }
+    AUTH_LDAP_ALWAYS_UPDATE_USER = True
+    AUTH_LDAP_FIND_GROUP_PERMS = True
+    AUTH_LDAP_CACHE_TIMEOUT = 3600
