@@ -20,8 +20,11 @@ backendServer = "http://backend"
 
 def index(request):
     if request.user.is_authenticated():
-        command = requests.post(backendServer, json = str(request.user))
-        print(command)
+        try: 
+            command = requests.post(backendServer, json = str(request.user))
+            print(command)
+        except:
+            pass
         return render(request, 'core/index.html', {})
     else:
         return HttpResponse("Something went wrong")
